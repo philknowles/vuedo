@@ -1,41 +1,41 @@
 <script setup>
   import { ref, onMounted, computed, watch } from 'vue'
-
   const todos = ref([])
   const name = ref('')
 
   const input_content = ref('')
   const input_category = ref(null)
 
-  const todos_asc = computed(() => todos.value.sort((a, b) => {
-    return b.createdAt - a.createdAt
+  const todos_asc = computed(() => todos.value.sort((a,b) => {
+    return a.createdAt - b.createdAt
   }))
-
-  const addTodo = () => {
-    if (input_content.value.trim() === '' || input_content.value === null){
-      return
-    }
-
-    todos.value.push({
-      content: input_content.value,
-      category: input_category.value,
-      done: false,
-      createdAt: new Date().getTime()
-    })
-  }
-
-  watch(todos, newVal => {
-    localStorage.setItem('todos', JSON.stringify(newVal))
-  }, {deep: true})
-
   watch(name, (newVal) => {
     localStorage.setItem('name', newVal)
   })
-
-  onMounted(() => {
-    name.value = localStorage.getItem('name') || ''
-    todos.value = JSON.stringify(localStorage.getItem('todos')) || []
+  watch(todos, (newVal) => {
+    localStorage.setItem('todos', JSON.stringify(newVal))
+  }, {
+    deep: true
   })
+  const addTodo = () => {
+    if (input_content.value.trim() === '' || input_category.value === null) {
+	  return
+	}
+	todos.value.push({
+		content: input_content.value,
+		category: input_category.value,
+		done: false,
+		editable: false,
+		createdAt: new Date().getTime()
+	})
+}
+const removeTodo = (todo) => {
+	todos.value = todos.value.filter((t) => t !== todo)
+}
+onMounted(() => {
+	name.value = localStorage.getItem('name') || ''
+	todos.value = JSON.parse(localStorage.getItem('todos')) || []
+})
 </script>
 
 <template>
@@ -87,14 +87,13 @@
       <h3>Todo List</h3>
 
       <div class="list">
-        <div v-for="todo in todo-asc" :class="`todo-item ${todo.done && 'done'}`">
+        <!-- <div v-for="todo in todo-asc" :class="`todo-item ${todo.done && 'done'}`">
           <label>
             <input type="checkbox" v-model="todo.done"/>
             <span class="`bubble ${todo.category`"></span>
           </label>
-        </div>
+        </div> -->
       </div>
     </section>
   </main>
 </template>
-
