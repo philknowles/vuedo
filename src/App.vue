@@ -29,12 +29,10 @@
 		createdAt: new Date().getTime()
 	})
 }
-const removeTodo = (todo) => {
-	todos.value = todos.value.filter((t) => t !== todo)
-}
+
 onMounted(() => {
-	name.value = localStorage.getItem('name') || ''
-	todos.value = JSON.parse(localStorage.getItem('todos')) || []
+  name.value = localStorage.getItem('name') || ''
+  todos.value = JSON.parse(localStorage.getItem('todos')) || []
 })
 </script>
 
@@ -87,12 +85,14 @@ onMounted(() => {
       <h3>Todo List</h3>
 
       <div class="list">
-        <!-- <div v-for="todo in todo-asc" :class="`todo-item ${todo.done && 'done'}`">
+
+        {{ todos }}
+        <div v-for="todo in todo_asc" :class="`todo-item ${todo.done && 'done'}`">
           <label>
             <input type="checkbox" v-model="todo.done"/>
-            <span class="`bubble ${todo.category`"></span>
+            <span :class="`bubble ${todo.category}`"></span>
           </label>
-        </div> -->
+        </div>
       </div>
     </section>
   </main>
